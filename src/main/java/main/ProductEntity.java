@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Map;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,7 +24,7 @@ public class ProductEntity {
 	private String name;
 	private float price;
 	private String image;
-	private String productDetails;
+	private Map<String, Object> productDetails;
 	private String category;
 
 	@Id
@@ -58,11 +60,11 @@ public class ProductEntity {
 		this.image = image;
 	}
 
-	public String getProductDetails() {
+	public Map<String, Object> getProductDetails() {
 		return productDetails;
 	}
 
-	public void setProductDetails(String productDetails) {
+	public void setProductDetails(Map<String, Object> productDetails) {
 		this.productDetails = productDetails;
 	}
 
