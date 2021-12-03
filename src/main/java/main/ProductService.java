@@ -5,9 +5,9 @@ import reactor.core.publisher.Mono;
 
 public interface ProductService {
 
-	Mono<ProductBoundary> findById(String id);
-
 	Mono<ProductBoundary> store(ProductBoundary productBoundary);
+
+	Mono<ProductBoundary> findById(String id);
 
 	Flux<ProductBoundary> findAll(String filterType, String filterValue, String sortBy, Boolean asc);
 
