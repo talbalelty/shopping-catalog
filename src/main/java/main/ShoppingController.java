@@ -2,6 +2,7 @@ package main;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,35 +24,33 @@ public class ShoppingController {
 		this.productService = productService;
 	}
 	
+	@RequestMapping(path="/shopping/products",
+			method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE,
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Mono<ProductBoundary> store(@RequestBody ProductBoundary productBoundary){
+		return this.productService.store(productBoundary);
+	}
+	
 	@RequestMapping(path="/shopping/products/{productId}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public Mono<ProductBoundary> findById(@RequestParam String id){
-		return this.productService.findById(id);
+	public Mono<ProductBoundary> findById(@PathVariable("productId") String productId){
+		return this.productService.findById(productId);
 	}
 	
-//	@RequestMapping(path="/people",
-//		method = RequestMethod.POST,
-//		consumes = MediaType.APPLICATION_JSON_VALUE,
-//		produces = MediaType.APPLICATION_JSON_VALUE)
-//	public Mono<Person> store (@RequestBody Person newPerson) {
-//		return this.people
-//			.store(newPerson);
-//	}
-//	
-//	@RequestMapping(path="/people",
-//			method = RequestMethod.GET,
-//			produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//	public Flux<Person> getAllPeople (){
-//		return this.people
-//			.getAll();
-//	}
-//
-//	@RequestMapping(path="/people",
-//			method = RequestMethod.DELETE)
-//	public Mono<Void> deleteAllPeople() {
-//		return this.people
-//			.deleteAllPeople();
-//	}
+	@RequestMapping(path="/shopping/products",
+			method = RequestMethod.GET,
+			produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	public Flux<ProductBoundary> findAll(
+			// all filters
+			@RequestParam(name = "filterType", required = false, defaultValue = "") String filterType,
+			@RequestParam(name = "filterValue", required = false, defaultValue = "") String filterValue,
+			// default
+			@RequestParam(name = "sortBy", required = false, defaultValue = "name") String sortBy,
+			@RequestParam(name = "sortOrder", required = false, defaultValue = "true") Boolean asc){
+		return this.productService.findAll(filterType, filterValue, sortBy, asc);
+	}	
+
 }
 
