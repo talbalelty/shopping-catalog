@@ -26,7 +26,7 @@ public class ShoppingController {
 	@RequestMapping(path="/shopping/products/{productId}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public Mono<Product> findById(@RequestParam String id){
+	public Mono<ProductBoundary> findById(@RequestParam String id){
 		return this.productService.findById(id);
 	}
 	

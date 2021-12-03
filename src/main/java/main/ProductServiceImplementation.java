@@ -16,7 +16,7 @@ public class ProductServiceImplementation implements ProductService {
 	}
 
 	@Override
-	public Mono<Product> findById(String id) {
+	public Mono<ProductBoundary> findById(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

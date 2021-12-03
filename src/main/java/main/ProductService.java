@@ -4,6 +4,6 @@ import reactor.core.publisher.Mono;
 
 public interface ProductService {
 
-	Mono<Product> findById(String id);
+	Mono<ProductBoundary> findById(String id);
 
 }
