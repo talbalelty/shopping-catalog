@@ -1,7 +1,12 @@
 package main;
 
+import java.util.List;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -41,8 +46,30 @@ public class ProductServiceImplementation implements ProductService {
 
 	@Override
 	public Flux<ProductBoundary> findAll(String filterType, String filterValue, String sortBy, Boolean asc) {
-		// TODO Auto-generated method stub
-		return null;
+		Direction sortDirection = asc?Direction.ASC:Direction.DESC;
+	
+		switch (filterType) {
+		case "byName":
+			return this.productDao
+					.findByFirstname(filterValue,Sort.by(sortDirection, sortBy))
+					.map(this::toBoundary)
+					.log();			
+		case "byMinPrice":
+			return this.productDao
+					.findByPriceGreaterThan(Float.parseFloat(filterValue),Sort.by(sortDirection,sortBy))
+					.map(this::toBoundary)
+					.log();
+		case "byMaxPrice":
+					
+		case "byCategoryName":
+					
+		default:
+			return this.productDao
+					.findAll() 
+					.map(this::toBoundary) 
+					.log();
+		}
+		
 	}
 	
 	private ProductEntity toEntity(ProductBoundary productBoundary) {
