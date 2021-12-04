@@ -18,33 +18,26 @@ public class ProductServiceImplementation implements ProductService {
 
 	@Override
 	public Mono<ProductBoundary> store(ProductBoundary productBoundary) {
-		return Mono.just(productBoundary)
-				.flatMap(boundary -> {
-					this.productDao.existsById(boundary.getId()).map(bool -> {
-						if (bool)
-							System.out.println("Product exists!");
-						else
-							System.out.println("Product not exists!");
-
-						return bool;
-					});
-					if (boundary.getId() == null) {
-						return Mono.error(
-								() -> new ProductAlreadyExistsException("could not create product with id: " + boundary.getId()));
-					} else {
-						return Mono.just(boundary);
-					}
-				}) // Mono<ProductBoundary>
-				.map(this::toEntity) // Mono<ProductEntity>
-				.flatMap(entity -> this.productDao.save(entity)) // Mono<ProductEntity>
-				.map(this::toBoundary) // Mono<ProductBoundary>
-				.log(); // Mono<ProductBoundary>
+		String id = productBoundary.getId();
+		return this.productDao.existsById(id).flatMap(exists -> {
+			if (exists) {
+				return Mono.error(() -> new ProductAlreadyExistsException("could not create product with id: " + id));
+			} else {
+				return Mono.just(productBoundary);
+			}
+		})
+		.map(this::toEntity)
+		.flatMap(entity -> this.productDao.save(entity))
+		.map(this::toBoundary)
+		.log();
 	}
 
 	@Override
 	public Mono<ProductBoundary> findById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.productDao.findById(id)
+				.switchIfEmpty(Mono.error(() -> new ProductNotFoundException("could not find product with id: " + id)))
+				.map(this::toBoundary)
+				.log();
 	}
 
 	@Override
