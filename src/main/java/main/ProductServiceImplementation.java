@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class ProductServiceImplementation implements ProductService {
 	private ProductDao productDao;
-	
+
 	@Autowired
 	public ProductServiceImplementation(ProductDao productDao) {
 		super();
@@ -19,20 +19,28 @@ public class ProductServiceImplementation implements ProductService {
 	@Override
 	public Mono<ProductBoundary> store(ProductBoundary productBoundary) {
 		return Mono.just(productBoundary)
-				.flatMap(boundary->{
-					if(boundary.getId() == null || this.productDao.existsById(boundary.getId()).block()) {
-						return Mono.error(() -> new ProductAlreadyExistsException("could not create product with id: "+ boundary.getId()));
-					} else {						
+				.flatMap(boundary -> {
+					this.productDao.existsById(boundary.getId()).map(bool -> {
+						if (bool)
+							System.out.println("Product exists!");
+						else
+							System.out.println("Product not exists!");
+
+						return bool;
+					});
+					if (boundary.getId() == null) {
+						return Mono.error(
+								() -> new ProductAlreadyExistsException("could not create product with id: " + boundary.getId()));
+					} else {
 						return Mono.just(boundary);
 					}
 				}) // Mono<ProductBoundary>
 				.map(this::toEntity) // Mono<ProductEntity>
-				.flatMap(entity->this.productDao
-						.save(entity)) // Mono<ProductEntity>
+				.flatMap(entity -> this.productDao.save(entity)) // Mono<ProductEntity>
 				.map(this::toBoundary) // Mono<ProductBoundary>
 				.log(); // Mono<ProductBoundary>
 	}
-	
+
 	@Override
 	public Mono<ProductBoundary> findById(String id) {
 		// TODO Auto-generated method stub
@@ -44,7 +52,7 @@ public class ProductServiceImplementation implements ProductService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	private ProductEntity toEntity(ProductBoundary productBoundary) {
 		ProductEntity rv = new ProductEntity();
 		rv.setId(productBoundary.getId());
@@ -55,7 +63,7 @@ public class ProductServiceImplementation implements ProductService {
 		rv.setCategory(productBoundary.getCategory());
 		return rv;
 	}
-	
+
 	private ProductBoundary toBoundary(ProductEntity productEntity) {
 		ProductBoundary rv = new ProductBoundary();
 		rv.setId(productEntity.getId());
@@ -66,7 +74,5 @@ public class ProductServiceImplementation implements ProductService {
 		rv.setCategory(productEntity.getCategory());
 		return rv;
 	}
-
-
 
 }
