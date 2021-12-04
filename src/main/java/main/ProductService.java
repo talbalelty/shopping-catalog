@@ -11,4 +11,6 @@ public interface ProductService {
 
 	Flux<ProductBoundary> findAll(String filterType, String filterValue, String sortBy, Boolean asc);
 
+	Mono<Void> deleteAllPeople();
+
 }

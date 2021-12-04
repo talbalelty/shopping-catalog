@@ -60,9 +60,15 @@ public class ProductServiceImplementation implements ProductService {
 					.map(this::toBoundary)
 					.log();
 		case "byMaxPrice":
-					
+			return this.productDao
+					.findByPriceLessThan(Float.parseFloat(filterValue),Sort.by(sortDirection,sortBy))
+					.map(this::toBoundary)
+					.log();
 		case "byCategoryName":
-					
+			return this.productDao
+					.findByCategoryName(filterValue,Sort.by(sortDirection,sortBy))
+					.map(this::toBoundary)
+					.log();
 		default:
 			return this.productDao
 					.findAll() 
@@ -70,6 +76,13 @@ public class ProductServiceImplementation implements ProductService {
 					.log();
 		}
 		
+	}
+	
+	@Override
+	public Mono<Void> deleteAllPeople() {
+		return this.productDao
+				.deleteAll()
+				.log();
 	}
 	
 	private ProductEntity toEntity(ProductBoundary productBoundary) {
