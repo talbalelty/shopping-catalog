@@ -50,7 +50,14 @@ public class ShoppingController {
 			@RequestParam(name = "sortBy", required = false, defaultValue = "name") String sortBy,
 			@RequestParam(name = "sortOrder", required = false, defaultValue = "true") Boolean asc){
 		return this.productService.findAll(filterType, filterValue, sortBy, asc);
-	}	
+	}
+	
+	@RequestMapping(path="/shopping/products",
+			method = RequestMethod.DELETE)
+	public Mono<Void> deleteAllProducts() {
+		return this.productService
+			.deleteAllProducts();
+	}
 
 }
 
