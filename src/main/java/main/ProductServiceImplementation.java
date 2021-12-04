@@ -71,20 +71,19 @@ public class ProductServiceImplementation implements ProductService {
 					.log();
 		default:
 			return this.productDao
-					.findAll() 
-					.map(this::toBoundary) 
+					.findAll()
+					.map(this::toBoundary)
 					.log();
 		}
-		
 	}
-	
+
 	@Override
 	public Mono<Void> deleteAllProducts() {
 		return this.productDao
 				.deleteAll()
 				.log();
 	}
-	
+
 	private ProductEntity toEntity(ProductBoundary productBoundary) {
 		ProductEntity rv = new ProductEntity();
 		rv.setId(productBoundary.getId());
@@ -95,7 +94,7 @@ public class ProductServiceImplementation implements ProductService {
 		rv.setCategory(productBoundary.getCategory());
 		return rv;
 	}
-	
+
 	private ProductBoundary toBoundary(ProductEntity productEntity) {
 		ProductBoundary rv = new ProductBoundary();
 		rv.setId(productEntity.getId());
