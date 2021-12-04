@@ -43,32 +43,27 @@ public class ProductServiceImplementation implements ProductService {
 	}
 	
 	public Flux<ProductBoundary> findAll(String filterType, String filterValue, String sortBy, Boolean asc) {
-		Direction sortDirection = asc?Direction.ASC:Direction.DESC;
-	
+		Direction sortDirection = asc ? Direction.ASC : Direction.DESC;
+
 		switch (filterType) {
 		case "byName":
-			return this.productDao
-					.findByName(filterValue,Sort.by(sortDirection, sortBy))
+			return this.productDao.findByName(filterValue, Sort.by(sortDirection, sortBy))
 					.map(this::toBoundary)
-					.log();			
+					.log();
 		case "byMinPrice":
-			return this.productDao
-					.findByPriceGreaterThan(Float.parseFloat(filterValue),Sort.by(sortDirection,sortBy))
+			return this.productDao.findByPriceGreaterThan(Float.parseFloat(filterValue), Sort.by(sortDirection, sortBy))
 					.map(this::toBoundary)
 					.log();
 		case "byMaxPrice":
-			return this.productDao
-					.findByPriceLessThan(Float.parseFloat(filterValue),Sort.by(sortDirection,sortBy))
+			return this.productDao.findByPriceLessThan(Float.parseFloat(filterValue), Sort.by(sortDirection, sortBy))
 					.map(this::toBoundary)
 					.log();
 		case "byCategoryName":
-			return this.productDao
-					.findByCategory(filterValue,Sort.by(sortDirection,sortBy))
+			return this.productDao.findByCategory(filterValue, Sort.by(sortDirection, sortBy))
 					.map(this::toBoundary)
 					.log();
 		default:
-			return this.productDao
-					.findAll()
+			return this.productDao.findAll(Sort.by(sortDirection, sortBy))
 					.map(this::toBoundary)
 					.log();
 		}
