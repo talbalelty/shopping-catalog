@@ -59,7 +59,7 @@ public class ProductServiceImplementation implements ProductService {
 		switch (filterType) {
 		case "byName":
 			return this.productDao
-					.findByFirstname(filterValue,Sort.by(sortDirection, sortBy))
+					.findByName(filterValue,Sort.by(sortDirection, sortBy))
 					.map(this::toBoundary)
 					.log();			
 		case "byMinPrice":
@@ -74,7 +74,7 @@ public class ProductServiceImplementation implements ProductService {
 					.log();
 		case "byCategoryName":
 			return this.productDao
-					.findByCategoryName(filterValue,Sort.by(sortDirection,sortBy))
+					.findByCategory(filterValue,Sort.by(sortDirection,sortBy))
 					.map(this::toBoundary)
 					.log();
 		default:
