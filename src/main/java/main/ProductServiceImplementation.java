@@ -79,7 +79,7 @@ public class ProductServiceImplementation implements ProductService {
 	}
 	
 	@Override
-	public Mono<Void> deleteAllPeople() {
+	public Mono<Void> deleteAllProducts() {
 		return this.productDao
 				.deleteAll()
 				.log();
