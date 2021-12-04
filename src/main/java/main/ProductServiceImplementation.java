@@ -1,12 +1,9 @@
 package main;
 
-import java.util.List;
-
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,12 +16,6 @@ public class ProductServiceImplementation implements ProductService {
 	public ProductServiceImplementation(ProductDao productDao) {
 		super();
 		this.productDao = productDao;
-	}
-
-	@Override
-	public Mono<ProductBoundary> findById(String id) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -49,6 +40,8 @@ public class ProductServiceImplementation implements ProductService {
 				.switchIfEmpty(Mono.error(() -> new ProductNotFoundException("could not find product with id: " + id)))
 				.map(this::toBoundary)
 				.log();
+	}
+	
 	public Flux<ProductBoundary> findAll(String filterType, String filterValue, String sortBy, Boolean asc) {
 		Direction sortDirection = asc?Direction.ASC:Direction.DESC;
 	
