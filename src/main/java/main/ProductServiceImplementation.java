@@ -1,5 +1,8 @@
 package main;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -28,10 +31,10 @@ public class ProductServiceImplementation implements ProductService {
 				return Mono.just(productBoundary);
 			}
 		})
-		.map(this::toEntity)
-		.flatMap(entity -> this.productDao.save(entity))
-		.map(this::toBoundary)
-		.log();
+				.map(this::toEntity)
+				.flatMap(entity -> this.productDao.save(entity))
+				.map(this::toBoundary)
+				.log();
 	}
 
 	@Override
@@ -41,31 +44,39 @@ public class ProductServiceImplementation implements ProductService {
 				.map(this::toBoundary)
 				.log();
 	}
-	
+
 	public Flux<ProductBoundary> findAll(String filterType, String filterValue, String sortBy, Boolean asc) {
 		Direction sortDirection = asc ? Direction.ASC : Direction.DESC;
+		List<String> productFields = ProductEntity.getFieldsNames();
+
+		if (!productFields.contains(sortBy)) {
+			return Flux.error(new IOException("Illegal sortBy value!"));
+		}
 
 		switch (filterType) {
-		case "byName":
-			return this.productDao.findByName(filterValue, Sort.by(sortDirection, sortBy))
-					.map(this::toBoundary)
-					.log();
-		case "byMinPrice":
-			return this.productDao.findByPriceGreaterThan(Float.parseFloat(filterValue), Sort.by(sortDirection, sortBy))
-					.map(this::toBoundary)
-					.log();
-		case "byMaxPrice":
-			return this.productDao.findByPriceLessThan(Float.parseFloat(filterValue), Sort.by(sortDirection, sortBy))
-					.map(this::toBoundary)
-					.log();
-		case "byCategoryName":
-			return this.productDao.findByCategory(filterValue, Sort.by(sortDirection, sortBy))
-					.map(this::toBoundary)
-					.log();
-		default:
-			return this.productDao.findAll(Sort.by(sortDirection, sortBy))
-					.map(this::toBoundary)
-					.log();
+			case "byName":
+				return this.productDao.findByName(filterValue, Sort.by(sortDirection, sortBy))
+						.map(this::toBoundary)
+						.log();
+			case "byMinPrice":
+				return this.productDao.findByPriceGreaterThan(Float.parseFloat(filterValue), Sort.by(sortDirection, sortBy))
+						.map(this::toBoundary)
+						.log();
+			case "byMaxPrice":
+				return this.productDao.findByPriceLessThan(Float.parseFloat(filterValue), Sort.by(sortDirection, sortBy))
+						.map(this::toBoundary)
+						.log();
+			case "byCategoryName":
+				return this.productDao.findByCategory(filterValue, Sort.by(sortDirection, sortBy))
+						.map(this::toBoundary)
+						.log();
+			default:
+				if (!filterType.isEmpty())
+					return Flux.error(new IOException("Illegal filterType value!"));
+
+				return this.productDao.findAll(Sort.by(sortDirection, sortBy))
+						.map(this::toBoundary)
+						.log();
 		}
 	}
 

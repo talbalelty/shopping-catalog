@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
@@ -26,6 +28,12 @@ public class ProductEntity {
 	private String image;
 	private Map<String, Object> productDetails;
 	private String category;
+
+	static public List<String> getFieldsNames() {
+		String fields[] = { "id", "name", "price", "image", "productDetails", "category" };
+
+		return Arrays.asList(fields);
+	}
 
 	@Id
 	public String getId() {
